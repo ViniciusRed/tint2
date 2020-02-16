@@ -527,7 +527,7 @@ gboolean resize_panel(void *obj)
         // Distribute the remaining size between taskbars
         if (num_tasks > 0) {
             int task_size = total_size / num_tasks;
-            if (taskbar_alignment != ALIGN_LEFT)
+            //if (taskbar_alignment != ALIGN_LEFT)
                 task_size = MIN(task_size, panel_horizontal ? panel_config.g_task.maximum_width : panel_config.g_task.maximum_height);
             for (int i = 0; i < panel->num_desktops; i++) {
                 Taskbar *taskbar = &panel->taskbar[i];
@@ -546,7 +546,7 @@ gboolean resize_panel(void *obj)
                 }
             }
             int slack = total_size - task_size * num_tasks;
-            if (taskbar_alignment == ALIGN_RIGHT) {
+            if (taskbar_alignment == ALIGN_LEFT) {
                 for (int i = 0; i < panel->num_desktops; i++) {
                     Taskbar *taskbar = &panel->taskbar[i];
                     if (!taskbar->area.on_screen)
