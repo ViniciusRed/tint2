@@ -47,7 +47,7 @@ GtkWidget *notebook;
 // taskbar
 GtkWidget *taskbar_show_desktop, *taskbar_show_name, *taskbar_padding_x, *taskbar_padding_y, *taskbar_spacing;
 GtkWidget *taskbar_hide_inactive_tasks, *taskbar_hide_diff_monitor, *taskbar_hide_diff_desktop;
-GtkWidget *taskbar_name_padding_x, *taskbar_name_padding_y, *taskbar_name_inactive_color, *taskbar_name_active_color;
+GtkWidget *taskbar_name_padding_x, *taskbar_name_padding_y, *taskbar_name_inactive_color, *taskbar_name_active_color, *taskbar_name_unoccupied_color;
 GtkWidget *taskbar_name_font, *taskbar_name_font_set;
 GtkWidget *taskbar_active_background, *taskbar_inactive_background;
 GtkWidget *taskbar_name_active_background, *taskbar_name_inactive_background;
@@ -2962,6 +2962,24 @@ void create_taskbar(GtkWidget *parent)
     gtk_tooltips_set_tip(tooltips,
                          taskbar_name_active_color,
                          _("Specifies the font color used to display the name of the current desktop."),
+                         NULL);
+
+    col = 2;
+    row++;
+    label = gtk_label_new(_("Unoccupied font color"));
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_widget_show(label);
+    gtk_table_attach(GTK_TABLE(table), label, col, col + 1, row, row + 1, GTK_FILL, 0, 0, 0);
+    col++;
+
+    taskbar_name_unoccupied_color = gtk_color_button_new();
+    gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), TRUE);
+    gtk_widget_show(taskbar_name_unoccupied_color);
+    gtk_table_attach(GTK_TABLE(table), taskbar_name_unoccupied_color, col, col + 1, row, row + 1, GTK_FILL, 0, 0, 0);
+    col++;
+    gtk_tooltips_set_tip(tooltips,
+                         taskbar_name_unoccupied_color,
+                         _("Specifies the font color used to display the name of inactive desktops containing windows."),
                          NULL);
 
     col = 2;

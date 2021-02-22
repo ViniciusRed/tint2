@@ -447,6 +447,11 @@ void config_write_taskbar(FILE *fp)
                        "taskbar_name_active_font_color",
                        color,
                        gtk_color_button_get_alpha(GTK_COLOR_BUTTON(taskbar_name_active_color)) * 100 / 0xffff);
+    gtk_color_button_get_color(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), &color);
+    config_write_color(fp,
+                       "taskbar_name_unoccupied_font_color",
+                       color,
+                       gtk_color_button_get_alpha(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color)) * 100 / 0xffff);
 
     fprintf(fp,
             "taskbar_distribute_size = %d\n",
@@ -1642,6 +1647,15 @@ void add_entry(char *key, char *value)
         if (value2) {
             int alpha = atoi(value2);
             gtk_color_button_set_alpha(GTK_COLOR_BUTTON(taskbar_name_active_color), (alpha * 65535) / 100);
+        }
+    } else if (strcmp(key, "taskbar_name_unoccupied_font_color") == 0) {
+        extract_values(value, &value1, &value2, &value3);
+        GdkColor col;
+        hex2gdk(value1, &col);
+        gtk_color_button_set_color(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), &col);
+        if (value2) {
+            int alpha = atoi(value2);
+            gtk_color_button_set_alpha(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), (alpha * 65535) / 100);
         }
     }
 
