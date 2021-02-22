@@ -6,9 +6,8 @@ Documentation: [doc/tint2.md](doc/tint2.md)
 Compile it with (after you install the [dependencies](https://gitlab.com/o9000/tint2/wikis/Install#dependencies)):
 
 ```
-git clone https://gitlab.com/o9000/tint2.git
+git clone https://github.com/Axarva/tint2-1.git tint2
 cd tint2
-git checkout 16.7
 mkdir build
 cd build
 cmake ..
