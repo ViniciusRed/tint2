@@ -24,6 +24,7 @@ typedef struct ExecpBackend {
     char *command;
     // Interval in seconds
     int interval;
+    int monitor;
     // 1 if first line of output is an icon path
     gboolean has_icon;
     gboolean cache_icon;
@@ -96,6 +97,7 @@ typedef struct Execp {
     ExecpBackend *backend;
     // Set only for frontend Execp items.
     ExecpFrontend *frontend;
+    bool dummy;
 } Execp;
 
 // Called before the config is read and panel_config/panels are created.

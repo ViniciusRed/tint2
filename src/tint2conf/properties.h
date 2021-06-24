@@ -2,9 +2,9 @@
 #ifndef PROPERTIES
 #define PROPERTIES
 
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 #include "../launcher/icon-theme-common.h"
 
@@ -106,7 +106,8 @@ extern GtkWidget *systray_background, *systray_monitor, *systray_name_filter;
 
 // tooltip
 extern GtkWidget *tooltip_padding_x, *tooltip_padding_y, *tooltip_font, *tooltip_font_set, *tooltip_font_color;
-extern GtkWidget *tooltip_task_show, *tooltip_show_after, *tooltip_hide_after, *tooltip_task_thumbnail, *tooltip_task_thumbnail_size;
+extern GtkWidget *tooltip_task_show, *tooltip_show_after, *tooltip_hide_after, *tooltip_task_thumbnail,
+    *tooltip_task_thumbnail_size;
 extern GtkWidget *clock_format_tooltip, *clock_tmz_tooltip;
 extern GtkWidget *tooltip_background;
 
@@ -133,7 +134,7 @@ typedef struct Executor {
     GtkWidget *page_execp;
     GtkWidget *page_label;
     GtkWidget *execp_command, *execp_interval, *execp_has_icon, *execp_cache_icon, *execp_show_tooltip;
-    GtkWidget *execp_continuous, *execp_markup, *execp_tooltip;
+    GtkWidget *execp_continuous, *execp_markup, *execp_tooltip, *execp_monitor;
     GtkWidget *execp_left_command, *execp_right_command;
     GtkWidget *execp_mclick_command, *execp_rclick_command, *execp_uwheel_command, *execp_dwheel_command;
     GtkWidget *execp_font, *execp_font_set, *execp_font_color, *execp_padding_x, *execp_padding_y, *execp_centered;

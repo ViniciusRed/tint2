@@ -1,13 +1,15 @@
-# Latest stable release: 16.7
-Changes: https://gitlab.com/o9000/tint2/blob/16.7/ChangeLog
+# Latest stable release: 17.0.1
+Changes: https://gitlab.com/o9000/tint2/blob/17.0.1/ChangeLog
 
 Documentation: [doc/tint2.md](doc/tint2.md)
 
 Compile it with (after you install the [dependencies](https://gitlab.com/o9000/tint2/wikis/Install#dependencies)):
 
 ```
-git clone https://github.com/Axarva/tint2-1.git tint2
+git clone https://gitlab.com/o9000/tint2.git
 cd tint2
+<<<<<<< HEAD
+git checkout 17.0.1
 mkdir build
 cd build
 cmake ..

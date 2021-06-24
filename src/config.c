@@ -1,59 +1,59 @@
 /**************************************************************************
-*
-* Tint2 : read/write config file
-*
-* Copyright (C) 2007 Pål Staurland (staura@gmail.com)
-* Modified (C) 2008 thierry lorthiois (lorthiois@bbsoft.fr) from Omega distribution
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License version 2
-* as published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-**************************************************************************/
+ *
+ * Tint2 : read/write config file
+ *
+ * Copyright (C) 2007 Pål Staurland (staura@gmail.com)
+ * Modified (C) 2008 thierry lorthiois (lorthiois@bbsoft.fr) from Omega distribution
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ **************************************************************************/
 
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <cairo.h>
-#include <cairo-xlib.h>
+#include <Imlib2.h>
+#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cairo-xlib.h>
+#include <cairo.h>
 #include <ctype.h>
 #include <glib/gstdio.h>
 #include <pango/pango-font.h>
-#include <Imlib2.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 #include "config.h"
 
 #ifndef TINT2CONF
 
-#include "tint2rc.h"
+#include "clock.h"
 #include "common.h"
+#include "execplugin.h"
+#include "launcher.h"
+#include "panel.h"
+#include "separator.h"
 #include "server.h"
 #include "strnatcmp.h"
-#include "panel.h"
+#include "systraybar.h"
 #include "task.h"
 #include "taskbar.h"
 #include "taskbarname.h"
-#include "systraybar.h"
-#include "launcher.h"
-#include "clock.h"
-#include "window.h"
-#include "tooltip.h"
 #include "timer.h"
-#include "separator.h"
-#include "execplugin.h"
+#include "tint2rc.h"
+#include "tooltip.h"
+#include "window.h"
 
 #ifdef ENABLE_BATTERY
 #include "battery.h"
@@ -697,6 +697,9 @@ void add_entry(char *key, char *value)
         } else {
             execp->backend->interval = v;
         }
+    } else if (strcmp(key, "execp_monitor") == 0) {
+        Execp *execp = get_or_create_last_execp();
+        execp->backend->monitor = config_get_monitor(value);
     } else if (strcmp(key, "execp_has_icon") == 0) {
         Execp *execp = get_or_create_last_execp();
         execp->backend->has_icon = atoi(value);
@@ -1162,8 +1165,9 @@ void add_entry(char *key, char *value)
         systray_monitor = MAX(0, config_get_monitor(value));
     } else if (strcmp(key, "systray_name_filter") == 0) {
         if (systray_hide_name_filter) {
-            fprintf(stderr, "tint2: Error: duplicate option 'systray_name_filter'. Please use it only once. See "
-                            "https://gitlab.com/o9000/tint2/issues/652\n");
+            fprintf(stderr,
+                    "tint2: Error: duplicate option 'systray_name_filter'. Please use it only once. See "
+                    "https://gitlab.com/o9000/tint2/issues/652\n");
             free(systray_hide_name_filter);
         }
         systray_hide_name_filter = strdup(value);

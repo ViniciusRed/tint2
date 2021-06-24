@@ -1,4 +1,4 @@
-# TINT2 1 "2019-07-14" 16.7
+# TINT2 1 "2021-05-29" 17.0.1
 
 ## NAME
 tint2 - lightweight panel/taskbar
@@ -408,6 +408,8 @@ panel_size = 94% 30
 
   * `taskbar_name_active_font_color = color opacity (0 to 100)` :  Font color for the name of the current desktop.
 
+  * `taskbar_name_inactive_font_color = color opacity (0 to 100)` : Font color for the name of desktops which aren't currently in use but contain windows.
+
 # Taskbar buttons
 
 The following options configure the task buttons in the taskbar:
@@ -621,6 +623,8 @@ The action semantics:
 
   * `execp_padding = horizontal_padding vertical_padding spacing_between_icon_and_text` *(since 0.12.4)*
 
+  * `execp_monitor = integer (1, 2, ...), primary or all` :  On which monitor to draw the executor. The first monitor is `1`. *(since 17.0)*
+
   * `execp_lclick_command = text` : Command to execute on left click. If not defined, `execp_command` is  executed immediately, unless it is currently running. *(since 0.12.4)*
   * `execp_mclick_command = text` : Command to execute on right click. If not defined, `execp_command` is  executed immediately, unless it is currently running. *(since 0.12.4)*
   * `execp_rclick_command = text` : Command to execute on middle click. If not defined, `execp_command` is  executed immediately, unless it is currently running. *(since 0.12.4)*
@@ -694,18 +698,18 @@ execp_markup = 1
 ##### Memory usage
 
 ```
+# Note the use of "stdbuf -oL" to force the program to flush the output line by line.
 execp = new
-execp_command = free | awk '/^-/ { printf "Mem: '$(free -h | awk '/^Mem:/ { print $2 }')' %.0f%%\n", 100*$3/($3+$4); fflush(stdout) }'
-execp_interval = 5
-execp_continuous = 0
+execp_command = free -b -s1 | stdbuf -oL awk '/^Mem:/ { printf "Mem: %s %.0f%%\n", $2, 100 * ($2 - $7) / $2 }' | stdbuf -oL numfmt --to=iec-i --field=2 -d' '
+execp_interval = 1
+execp_continuous = 1
 ```
 
 ##### Network load
 
 ```
-# Note the use of "stdbuf -oL" to force the program to flush the output line by line.
 execp = new
-execp_command = stdbuf -oL bwm-ng -o csv -t 1000 | awk -F ';' '/total/ { printf "Net: %.0f Mb/s\n", ($5*8/1.0e6) }; fflush(stdout)'
+execp_command = stdbuf -oL bwm-ng -o csv -t 1000 | stdbuf -oL awk -F ';' '/total/ { printf "Net: %.0f Mb/s\n", ($5*8/1.0e6) }'
 execp_continuous = 1
 execp_interval = 1
 ```

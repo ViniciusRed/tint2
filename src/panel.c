@@ -1,40 +1,40 @@
 /**************************************************************************
-*
-* Copyright (C) 2008 Pål Staurland (staura@gmail.com)
-* Modified (C) 2008 thierry lorthiois (lorthiois@bbsoft.fr) from Omega distribution
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License version 2
-* as published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-**************************************************************************/
+ *
+ * Copyright (C) 2008 Pål Staurland (staura@gmail.com)
+ * Modified (C) 2008 thierry lorthiois (lorthiois@bbsoft.fr) from Omega distribution
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ **************************************************************************/
 
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <cairo-xlib.h>
+#include <cairo.h>
 #include <glib.h>
+#include <pango/pangocairo.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <cairo.h>
-#include <cairo-xlib.h>
-#include <pango/pangocairo.h>
 
-#include "server.h"
 #include "config.h"
-#include "window.h"
-#include "task.h"
 #include "panel.h"
+#include "server.h"
+#include "task.h"
 #include "tooltip.h"
+#include "window.h"
 
 void panel_clear_background(void *obj);
 
@@ -103,7 +103,7 @@ void default_panel()
     panel_autohide_height = 5; // for vertical panels this is of course the width
     panel_shrink = FALSE;
     panel_strut_policy = STRUT_FOLLOW_SIZE;
-    panel_dock = FALSE;         // default not in the dock
+    panel_dock = FALSE; // default not in the dock
     panel_pivot_struts = FALSE;
     panel_layer = BOTTOM_LAYER; // default is bottom layer
     panel_window_name = strdup("tint2");
@@ -231,8 +231,11 @@ void init_panel()
             p->scale = 1;
         if (ui_scale_monitor_size_ref > 0)
             p->scale *= server.monitors[p->monitor].height / ui_scale_monitor_size_ref;
-        if (p->scale > 8 || p->scale < 1./8) {
-            fprintf(stderr, RED "tint2: panel %d having scale %g outside bounds, resetting to 1.0" RESET "\n", i + 1, p->scale);
+        if (p->scale > 8 || p->scale < 1. / 8) {
+            fprintf(stderr,
+                    RED "tint2: panel %d having scale %g outside bounds, resetting to 1.0" RESET "\n",
+                    i + 1,
+                    p->scale);
             p->scale = 1;
         }
         fprintf(stderr, BLUE "tint2: panel %d uses scale %g " RESET "\n", i + 1, p->scale);
@@ -269,8 +272,9 @@ void init_panel()
                 init_freespace_panel(p);
             if (panel_items_order[k] == ':')
                 init_separator_panel(p);
-            if (panel_items_order[k] == 'E')
+            if (panel_items_order[k] == 'E') {
                 init_execp_panel(p);
+            }
             if (panel_items_order[k] == 'P')
                 init_button_panel(p);
         }
@@ -432,8 +436,8 @@ void panel_compute_position(Panel *panel)
         panel->hidden_width = panel->area.width - diff;
         panel->hidden_height = panel->area.height;
     }
-    // fprintf(stderr, "tint2: panel : posx %d, posy %d, width %d, height %d\n", panel->posx, panel->posy, panel->area.width,
-    // panel->area.height);
+    // fprintf(stderr, "tint2: panel : posx %d, posy %d, width %d, height %d\n", panel->posx, panel->posy,
+    // panel->area.width, panel->area.height);
 }
 
 void init_panel_size_and_position(Panel *panel)
@@ -528,7 +532,9 @@ gboolean resize_panel(void *obj)
         if (num_tasks > 0) {
             int task_size = total_size / num_tasks;
             if (taskbar_alignment != ALIGN_LEFT)
-                task_size = MIN(task_size, panel_horizontal ? panel_config.g_task.maximum_width : panel_config.g_task.maximum_height);
+                task_size =
+                    MIN(task_size,
+                        panel_horizontal ? panel_config.g_task.maximum_width : panel_config.g_task.maximum_height);
             for (int i = 0; i < panel->num_desktops; i++) {
                 Taskbar *taskbar = &panel->taskbar[i];
                 if (!taskbar->area.on_screen)
@@ -612,19 +618,19 @@ gboolean resize_panel(void *obj)
     return FALSE;
 }
 
-#define STRUT_LEFT      0
-#define STRUT_RIGHT     1
-#define STRUT_TOP       2
-#define STRUT_BOTTOM    3
-#define STRUT_LEFT_Y1   4
-#define STRUT_LEFT_Y2   5
-#define STRUT_RIGHT_Y1  6
-#define STRUT_RIGHT_Y2  7
-#define STRUT_TOP_X1    8
-#define STRUT_TOP_X2    9
+#define STRUT_LEFT 0
+#define STRUT_RIGHT 1
+#define STRUT_TOP 2
+#define STRUT_BOTTOM 3
+#define STRUT_LEFT_Y1 4
+#define STRUT_LEFT_Y2 5
+#define STRUT_RIGHT_Y1 6
+#define STRUT_RIGHT_Y2 7
+#define STRUT_TOP_X1 8
+#define STRUT_TOP_X2 9
 #define STRUT_BOTTOM_X1 10
 #define STRUT_BOTTOM_X2 11
-#define STRUT_COUNT     12
+#define STRUT_COUNT 12
 #define STRUT_COUNT_OLD 4
 
 void update_strut(Panel *p)
@@ -644,7 +650,8 @@ void update_strut(Panel *p)
     long struts[STRUT_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     if (panel_horizontal ^ panel_pivot_struts) {
         int height = p->area.height + p->marginy;
-        if (panel_strut_policy == STRUT_MINIMUM || (panel_strut_policy == STRUT_FOLLOW_SIZE && panel_autohide && p->is_hidden))
+        if (panel_strut_policy == STRUT_MINIMUM ||
+            (panel_strut_policy == STRUT_FOLLOW_SIZE && panel_autohide && p->is_hidden))
             height = p->hidden_height;
         if (panel_position & TOP) {
             struts[STRUT_TOP] = height + monitor.y;
@@ -659,7 +666,8 @@ void update_strut(Panel *p)
         }
     } else {
         int width = p->area.width + p->marginx;
-        if (panel_strut_policy == STRUT_MINIMUM || (panel_strut_policy == STRUT_FOLLOW_SIZE && panel_autohide && p->is_hidden))
+        if (panel_strut_policy == STRUT_MINIMUM ||
+            (panel_strut_policy == STRUT_FOLLOW_SIZE && panel_autohide && p->is_hidden))
             width = p->hidden_width;
         if (panel_position & LEFT) {
             struts[STRUT_LEFT] = width + monitor.x;
