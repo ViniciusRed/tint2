@@ -8,8 +8,6 @@ Compile it with (after you install the [dependencies](https://gitlab.com/o9000/t
 ```
 git clone https://gitlab.com/o9000/tint2.git
 cd tint2
-<<<<<<< HEAD
-git checkout 17.0.1
 mkdir build
 cd build
 cmake ..
