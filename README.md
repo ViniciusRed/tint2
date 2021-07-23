@@ -6,7 +6,7 @@ Documentation: [doc/tint2.md](doc/tint2.md)
 Compile it with (after you install the [dependencies](https://gitlab.com/o9000/tint2/wikis/Install#dependencies)):
 
 ```
-git clone https://gitlab.com/o9000/tint2.git
+git clone https://github.com/Axarva/tint2-1.git
 cd tint2
 mkdir build
 cd build
