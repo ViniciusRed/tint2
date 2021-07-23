@@ -7,11 +7,11 @@ Compile it with (after you install the [dependencies](https://gitlab.com/o9000/t
 
 ```
 git clone https://github.com/Axarva/tint2-1.git
-cd tint2
+cd tint2-1
 mkdir build
 cd build
 cmake ..
-make -j4
+make -j$(nproc)
 ```
 
 To install, run (as root):
