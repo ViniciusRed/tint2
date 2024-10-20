@@ -234,7 +234,7 @@ void draw_taskbarname(void *obj, cairo_t *c)
     pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
     pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
     pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_NONE);
-    pango_layout_set_text(layout, taskbar_name->name, strlen(taskbar_name->name));
+    pango_layout_set_text(layout, taskbar_name->name+2, strlen(taskbar_name->name+2));
 
     cairo_set_source_rgba(c, config_text->rgb[0], config_text->rgb[1], config_text->rgb[2], config_text->alpha);
 
