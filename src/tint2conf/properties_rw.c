@@ -1,12 +1,12 @@
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
 
 #include "common.h"
+#include "gradient_gui.h"
 #include "properties.h"
 #include "properties_rw.h"
-#include "gradient_gui.h"
 
 void finalize_gradient();
 void finalize_bg();
@@ -110,8 +110,9 @@ void config_write_gradients(FILE *fp)
         fprintf(fp, "# Gradient %d\n", index);
         fprintf(fp,
                 "gradient = %s\n",
-                g->type == GRADIENT_CONFIG_HORIZONTAL ? "horizontal" : g->type == GRADIENT_CONFIG_VERTICAL ? "vertical"
-                                                                                                           : "radial");
+                g->type == GRADIENT_CONFIG_HORIZONTAL ? "horizontal"
+                : g->type == GRADIENT_CONFIG_VERTICAL ? "vertical"
+                                                      : "radial");
 
         cairoColor2GdkColor(g->start_color.color.rgb[0],
                             g->start_color.color.rgb[1],
@@ -295,7 +296,9 @@ void config_write_panel(FILE *fp)
     fprintf(fp, "panel_background_id = %d\n", gtk_combo_box_get_active(GTK_COMBO_BOX(panel_background)));
     fprintf(fp, "wm_menu = %d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(panel_wm_menu)) ? 1 : 0);
     fprintf(fp, "panel_dock = %d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(panel_dock)) ? 1 : 0);
-    fprintf(fp, "panel_pivot_struts = %d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(panel_pivot_struts)) ? 1 : 0);
+    fprintf(fp,
+            "panel_pivot_struts = %d\n",
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(panel_pivot_struts)) ? 1 : 0);
 
     fprintf(fp, "panel_position = ");
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(screen_position[POS_BLH]))) {
@@ -379,9 +382,7 @@ void config_write_panel(FILE *fp)
             (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(mouse_pressed_icon_saturation)),
             (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(mouse_pressed_icon_brightness)));
 
-    fprintf(fp,
-            "scale_relative_to_dpi = %d\n",
-            (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(scale_relative_to_dpi)));
+    fprintf(fp, "scale_relative_to_dpi = %d\n", (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(scale_relative_to_dpi)));
     fprintf(fp,
             "scale_relative_to_screen_height = %d\n",
             (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(scale_relative_to_screen_height)));
@@ -447,6 +448,11 @@ void config_write_taskbar(FILE *fp)
                        "taskbar_name_active_font_color",
                        color,
                        gtk_color_button_get_alpha(GTK_COLOR_BUTTON(taskbar_name_active_color)) * 100 / 0xffff);
+    gtk_color_button_get_color(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), &color);
+    config_write_color(fp,
+                       "taskbar_name_unoccupied_font_color",
+                       color,
+                       gtk_color_button_get_alpha(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color)) * 100 / 0xffff);
 
     fprintf(fp,
             "taskbar_distribute_size = %d\n",
@@ -536,11 +542,12 @@ void config_write_task(FILE *fp)
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(task_font_set)))
         fprintf(fp, "task_font = %s\n", gtk_font_button_get_font_name(GTK_FONT_BUTTON(task_font)));
     fprintf(fp, "task_tooltip = %d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tooltip_task_show)) ? 1 : 0);
-    fprintf(fp, "task_thumbnail = %d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tooltip_task_thumbnail)) ? 1 : 0);
+    fprintf(fp,
+            "task_thumbnail = %d\n",
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tooltip_task_thumbnail)) ? 1 : 0);
     fprintf(fp,
             "task_thumbnail_size = %d\n",
             (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(tooltip_task_thumbnail_size)));
-
 
     // same for: "" _normal _active _urgent _iconified
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(task_default_color_set))) {
@@ -834,9 +841,9 @@ void config_write_separator(FILE *fp)
         // (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(separator->separator_style)));
         fprintf(fp,
                 "separator_style = %s\n",
-                gtk_combo_box_get_active(GTK_COMBO_BOX(separator->separator_style)) == 0
-                    ? "empty"
-                    : gtk_combo_box_get_active(GTK_COMBO_BOX(separator->separator_style)) == 1 ? "line" : "dots");
+                gtk_combo_box_get_active(GTK_COMBO_BOX(separator->separator_style)) == 0   ? "empty"
+                : gtk_combo_box_get_active(GTK_COMBO_BOX(separator->separator_style)) == 1 ? "line"
+                                                                                           : "dots");
         fprintf(fp,
                 "separator_size = %d\n",
                 (int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(separator->separator_size)));
@@ -871,6 +878,16 @@ void config_write_execp(FILE *fp)
         fprintf(fp,
                 "execp_markup = %d\n",
                 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(executor->execp_markup)) ? 1 : 0);
+        fprintf(fp, "execp_monitor = ");
+        if (gtk_combo_box_get_active(GTK_COMBO_BOX(executor->execp_monitor)) <= 0) {
+            fprintf(fp, "all");
+        } else if (gtk_combo_box_get_active(GTK_COMBO_BOX(executor->execp_monitor)) == 1) {
+            fprintf(fp, "primary");
+        } else {
+            fprintf(fp, "%d", MAX(1, gtk_combo_box_get_active(GTK_COMBO_BOX(executor->execp_monitor)) - 1));
+        }
+        fprintf(fp, "\n");
+
         if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(executor->execp_show_tooltip))) {
             fprintf(fp, "execp_tooltip = \n");
         } else {
@@ -1643,6 +1660,15 @@ void add_entry(char *key, char *value)
             int alpha = atoi(value2);
             gtk_color_button_set_alpha(GTK_COLOR_BUTTON(taskbar_name_active_color), (alpha * 65535) / 100);
         }
+    } else if (strcmp(key, "taskbar_name_unoccupied_font_color") == 0) {
+        extract_values(value, &value1, &value2, &value3);
+        GdkColor col;
+        hex2gdk(value1, &col);
+        gtk_color_button_set_color(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), &col);
+        if (value2) {
+            int alpha = atoi(value2);
+            gtk_color_button_set_alpha(GTK_COLOR_BUTTON(taskbar_name_unoccupied_color), (alpha * 65535) / 100);
+        }
     }
 
     /* Task */
@@ -1771,8 +1797,7 @@ void add_entry(char *key, char *value)
     // "tooltip" is deprecated but here for backwards compatibility
     else if (strcmp(key, "task_tooltip") == 0 || strcmp(key, "tooltip") == 0) {
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tooltip_task_show), atoi(value));
-    }
-    else if (strcmp(key, "task_thumbnail") == 0)
+    } else if (strcmp(key, "task_thumbnail") == 0)
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tooltip_task_thumbnail), atoi(value));
     else if (strcmp(key, "task_thumbnail_size") == 0)
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(tooltip_task_thumbnail_size), MAX(8, atoi(value)));
@@ -1855,10 +1880,12 @@ void add_entry(char *key, char *value)
     } else if (strcmp(key, "launcher_apps_dir") == 0) {
         char *path = expand_tilde(value);
 
-        if (gtk_entry_get_text_length(GTK_ENTRY(launcher_apps_dirs)) > 0) {
-            gtk_entry_append_text(GTK_ENTRY(launcher_apps_dirs), ",");
+        int position = gtk_entry_get_text_length(GTK_ENTRY(launcher_apps_dirs));
+        if (position > 0) {
+            gtk_editable_insert_text(GTK_EDITABLE(launcher_apps_dirs), ",", 1, &position);
         }
-        gtk_entry_append_text(GTK_ENTRY(launcher_apps_dirs), path);
+        position = gtk_entry_get_text_length(GTK_ENTRY(launcher_apps_dirs));
+        gtk_editable_insert_text(GTK_EDITABLE(launcher_apps_dirs), path, strlen(path), &position);
 
         free(path);
     } else if (strcmp(key, "launcher_icon_theme") == 0) {
@@ -1962,6 +1989,23 @@ void add_entry(char *key, char *value)
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(execp_get_last()->execp_continuous), atoi(value));
     } else if (strcmp(key, "execp_markup") == 0) {
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(execp_get_last()->execp_markup), atoi(value));
+    } else if (strcmp(key, "execp_monitor") == 0) {
+        if (strcmp(value, "all") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 0);
+        else if (strcmp(value, "primary") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 1);
+        else if (strcmp(value, "1") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 2);
+        else if (strcmp(value, "2") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 3);
+        else if (strcmp(value, "3") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 4);
+        else if (strcmp(value, "4") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 5);
+        else if (strcmp(value, "5") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 6);
+        else if (strcmp(value, "6") == 0)
+            gtk_combo_box_set_active(GTK_COMBO_BOX(execp_get_last()->execp_monitor), 7);
     } else if (strcmp(key, "execp_tooltip") == 0) {
         if (strlen(value) > 0) {
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(execp_get_last()->execp_show_tooltip), 1);
